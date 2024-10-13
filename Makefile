@@ -1,5 +1,6 @@
 PLUGIN_NAME = juicedata/juicefs
-PLUGIN_TAG ?= latest
+ARCH = amd64
+PLUGIN_TAG ?= ${ARCH}-latest
 rootfs: JUICEFS_CE_VERSION ?= $(shell curl -s https://api.github.com/repos/juicedata/juicefs/releases/latest | grep 'tag_name' | cut -d '"' -f 4 | tr -d 'v')
 
 all: clean rootfs create
@@ -10,7 +11,7 @@ clean:
 
 rootfs:
 	@echo "### docker build: rootfs image with docker-volume-juicefs"
-	@docker build --build-arg="JUICEFS_CE_VERSION=${JUICEFS_CE_VERSION}" -t ${PLUGIN_NAME}:rootfs .
+	@docker build --build-arg="ARCH=${ARCH}" --build-arg="JUICEFS_CE_VERSION=${JUICEFS_CE_VERSION}" -t ${PLUGIN_NAME}:rootfs .
 	@echo "### create rootfs directory in ./plugin/rootfs"
 	@mkdir -p ./plugin/rootfs
 	@docker create --name tmp ${PLUGIN_NAME}:rootfs
